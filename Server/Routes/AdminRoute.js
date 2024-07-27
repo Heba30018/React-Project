@@ -1,22 +1,30 @@
-import express from 'express'
-import con from '../../utils/db'
-import { jwt } from 'jsonwebtoken'
+import express from 'express';
+import con from '../../utils/db.mjs'; 
+import jwt from 'jsonwebtoken'; 
+const router = express.Router();
 
+router.post('/adminlogin', (req, res) => {
+  console.log(req.body);
+  const sql = 'SELECT * FROM admin WHERE email = ? AND password = ?';
+  console.log(req.body)
+  con.query(sql, [req.body.email, req.body.password], (err, result) => {
+    if (err) {
+      return res.status(500).json({ loginStatus: false, error: 'Query error' });
+    }   
+    if (result.length > 0) {
+      const email = result[0].email;
+      const token = jwt.sign(
+        { role: 'admin', email: email },
+        'jwt_secret_Key',
+        { expiresIn: '1d' }
+      );
+      res.cookie('token', token);
 
-const router = express.Router()
+      return res.json({ loginStatus: true });
+    } else {
+      return res.json({ loginStatus: false, error: 'Wrong email or password' });
+    }
+  });
+});
 
-router.post('/adminlogin' , (req,res) =>{
-      console.log(req.body)
-      const sql = "SELECT * from admin where email = ? and password = ?"
-      con.query(sql, [req.body.email, req.body.password] , 
-            (err,result) => {
-                  if(err) return res.json({loginStatus: false, Error: "Query error"})
-                  if(result.length > 0){
-                        const email = result[0].email;
-                       
-                  }
-            })
-})
-
-
-export {router as adminRouter}
+export { router as adminRouter };
