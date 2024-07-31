@@ -29,6 +29,12 @@ export const AddEmployee = () => {
         }).catch(err => console.log(err))
       },[])
 
+      const handleSubmit = (e) =>{
+            e.preventDefault();
+            axios.post('http://localhost:3000/auth/add_employee',employee)
+            .then(result => console.log(result.data))
+            .catch(err => console.log(err))
+      }
 
   return (  
 <div className="d-flex justify-content-center align-items-center mt-3">
