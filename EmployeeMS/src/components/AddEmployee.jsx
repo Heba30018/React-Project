@@ -1,5 +1,6 @@
 import React, { useState, useEffect  } from 'react'
 import axios from 'axios'
+import { useNavigate } from 'react-router-dom';
 
 export const AddEmployee = () => {
 
@@ -16,7 +17,7 @@ export const AddEmployee = () => {
 
 
       const [category , setCategory] = useState([])
-
+      const navigate = useNavigate()
 
       useEffect(()=>{
         axios.get('http://localhost:3000/auth/category')
@@ -33,8 +34,26 @@ export const AddEmployee = () => {
       const handleSubmit = (e) =>{
             e.preventDefault();
             // console.log(employee)
-            axios.post('http://localhost:3000/auth/add_employee',employee)
-            .then(result => console.log(result.data))
+            const formData = new FormData();
+            formData.append('name' , employee.name);
+            formData.append('email' , employee.email);
+            formData.append('password' , employee.password);
+            formData.append('address' , employee.address);
+            formData.append('salary' , employee.salary);
+            formData.append('image' , employee.image);
+            formData.append('category_id' , employee.category_id);
+
+
+            axios.post('http://localhost:3000/auth/add_employee',formData)
+            .then(result =>{
+              if(result.data.Status){
+                navigate('/dashboard/employee')   
+             }else{
+                   alert(result.data.Error)
+             }
+            }
+               
+            )
             .catch(err => console.log(err))
       }
 
@@ -122,7 +141,9 @@ export const AddEmployee = () => {
                     setEmployee({...employee, category_id : parseInt(e.target.value)})
                   console.log(e.target.value)
                   }   }
+                  required
         >
+          <option value="">Select Category</option>
           {
             category.map(c => {
                   return <option value={c.id}>{c.name}</option>
@@ -141,8 +162,8 @@ export const AddEmployee = () => {
           id="inputGroupFile01"
           name="image"
           onChange= {(e) => {
-            setEmployee({...employee, image : e.target.files[0].name})
-            console.log(e.target.files[0].name)
+            setEmployee({...employee, image : e.target.files[0]})
+            // console.log(e.target.files[0].name)
           }}
 
         />
