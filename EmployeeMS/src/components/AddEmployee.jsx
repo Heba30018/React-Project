@@ -4,15 +4,15 @@ import axios from 'axios'
 export const AddEmployee = () => {
 
 
-      const [employee, setEmployee] = useState({
-            name: '',
-            email : '',
-            password : '',
-            salary: '',
-            address: '',
-            category : '',
-            image: ''
-      })
+  const [employee, setEmployee] = useState({
+    name: "",
+    email: "",
+    password: "",
+    salary: "",
+    address: "",
+    category_id: "",
+    image: "",
+  });
 
 
       const [category , setCategory] = useState([])
@@ -22,6 +22,7 @@ export const AddEmployee = () => {
         axios.get('http://localhost:3000/auth/category')
         .then(result =>{
             if(result.data.Status){
+              console.log(result.data.Result)
               setCategory(result.data.Result)
             }else{
               alert(result.data.Error)
@@ -31,6 +32,7 @@ export const AddEmployee = () => {
 
       const handleSubmit = (e) =>{
             e.preventDefault();
+            // console.log(employee)
             axios.post('http://localhost:3000/auth/add_employee',employee)
             .then(result => console.log(result.data))
             .catch(err => console.log(err))
@@ -50,7 +52,8 @@ export const AddEmployee = () => {
           className="form-control rounded-0"
           id="inputName"
           placeholder="Enter Name"
-          onChange= {(e) => setEmployee({...employee, name : e.target.value})}
+          onChange= {(e) => setEmployee({...employee, name : e.target.value})
+          }
 
         />
       </div>
@@ -115,7 +118,10 @@ export const AddEmployee = () => {
           Category
         </label>
         <select name="category" id="category" className="form-select"
-                  onChange= {(e) => setEmployee({...employee, category : e.target.value})}
+                  onChange= {(e)=> {
+                    setEmployee({...employee, category_id : parseInt(e.target.value)})
+                  console.log(e.target.value)
+                  }   }
         >
           {
             category.map(c => {
@@ -134,7 +140,10 @@ export const AddEmployee = () => {
           className="form-control rounded-0"
           id="inputGroupFile01"
           name="image"
-          onChange= {(e) => setEmployee({...employee, image : e.target.files[0]})}
+          onChange= {(e) => {
+            setEmployee({...employee, image : e.target.files[0].name})
+            console.log(e.target.files[0].name)
+          }}
 
         />
       </div>
