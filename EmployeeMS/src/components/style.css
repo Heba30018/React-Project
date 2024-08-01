@@ -10,3 +10,11 @@
       background-color: rgba(1, 32, 93, 0.6);
       color: white;
 }
+ul li :hover{
+      background-color: gray;
+}
+.employee_image{
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+}
